@@ -1,0 +1,34 @@
+{
+  "name": "prop24-scraper",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "prestart": "dotenvx run -f .env -- docker compose up -d",
+    "start": "dotenvx run -f .env -- ts-node src/index.ts",
+    "stop": "docker compose down",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "property24"
+  ],
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "pg": "^8.11.3",
+    "puppeteer": "^24.34.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@dotenvx/dotenvx": "^1.51.2",
+    "@types/cheerio": "^0.22.0",
+    "@types/node": "^20.19.27",
+    "@types/pg": "^8.6.6",
+    "@types/puppeteer": "^5.4.7",
+    "@types/yargs": "^17.0.32",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
