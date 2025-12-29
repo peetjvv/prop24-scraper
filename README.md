@@ -97,12 +97,6 @@ The scraper collects the following information for each property:
 
 ## Usage
 
-### Build the project
-
-```bash
-npm run build
-```
-
 ### Scrape properties from a suburb
 
 ```bash
@@ -112,9 +106,6 @@ npm start -- scrape "Johannesburg"
 ### Scrape with options
 
 ```bash
-# Specify province
-npm start -- scrape "Johannesburg" --province "Gauteng"
-
 # Run with browser visible (not headless)
 npm start -- scrape "Johannesburg" --headless false
 

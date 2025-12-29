@@ -37,7 +37,6 @@ export interface Property {
 
 export interface ScraperOptions {
   suburb: string;
-  province?: string;
   headless?: boolean;
   timeout?: number;
 }

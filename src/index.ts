@@ -20,11 +20,6 @@ async function main(): Promise<void> {
             describe: "Suburb name to scrape",
             type: "string",
           })
-          .option("province", {
-            alias: "p",
-            describe: "Province name (optional)",
-            type: "string",
-          })
           .option("headless", {
             describe: "Run browser in headless mode",
             type: "boolean",
@@ -39,7 +34,6 @@ async function main(): Promise<void> {
       },
       async (args: any) => {
         await scrapeSuburb(args.suburb, {
-          province: args.province,
           headless: args.headless,
           timeout: args.timeout,
         });
@@ -68,7 +62,7 @@ async function main(): Promise<void> {
 
 async function scrapeSuburb(
   suburb: string,
-  options?: { province?: string; headless?: boolean; timeout?: number }
+  options?: { headless?: boolean; timeout?: number }
 ): Promise<void> {
   try {
     console.log("\n📦 Prop24 Web Scraper");
