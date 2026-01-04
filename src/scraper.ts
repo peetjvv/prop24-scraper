@@ -483,8 +483,7 @@ export class Property24Scraper {
 
         // wait for navigation to complete
         try {
-          await page.waitForNavigation({
-            waitUntil: "networkidle2",
+          await page.waitForSelector("div.js_listingResultsContainer", {
             timeout: 30000,
           });
           await this.takeScreenshot(page, "after-navigation");
