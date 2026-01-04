@@ -7,6 +7,14 @@ import type { Property, ScraperOptions, ScraperResult } from "./types";
 
 const BASE_URL = "https://www.property24.com";
 
+const PROPERTY_CARD_SELECTORS = [
+  '[class="p24_regularTile"]',
+  '[data-test-id="property-card"]',
+  ".property-card",
+  '[class*="property"]',
+  "article",
+];
+
 export class Property24Scraper {
   private browser: Browser | null = null;
   private options: ScraperOptions;
@@ -86,11 +94,9 @@ export class Property24Scraper {
 
         // Wait for property listings to load
         await page
-          .waitForSelector('[data-test-id="property-card"]', { timeout: 10000 })
+          .waitForSelector('[class="p24_regularTile"]', { timeout: 10000 })
           .catch(() => {
-            console.warn(
-              "⚠️  Property cards not found, attempting alternative selectors"
-            );
+            console.warn("⚠️  Property cards not found");
           });
 
         // Scrape all pages with pagination
@@ -163,29 +169,22 @@ export class Property24Scraper {
     currentPageNum: number
   ): Promise<boolean> {
     try {
-      // Look for next page button using common selectors
-      const nextPageSelectors = [
-        'a[rel="next"]',
-        'button:has-text("Next")',
-        '[class*="next"] a',
-        'a[aria-label*="next"]',
-        'a[title*="next"]',
-      ];
-
-      for (const selector of nextPageSelectors) {
-        const nextButton = await page.$(selector);
-        if (nextButton) {
-          await nextButton.click();
-          // Wait for page to load
+      // Prefer explicit next-page anchor used by the site
+      const pullRight = await page.$("a.pull-right");
+      if (pullRight) {
+        const className: string =
+          (await page.evaluate((el: any) => el.className, pullRight)) || "";
+        // If it has text-muted class it is disabled / no next page
+        if (!className.includes("text-muted")) {
+          await pullRight.click();
           try {
             await page.waitForNavigation({
               waitUntil: "networkidle2",
               timeout: 10000,
             });
           } catch {
-            // navigation may happen via AJAX; wait for cards to update
             try {
-              await page.waitForSelector('[data-test-id="property-card"]', {
+              await page.waitForSelector('[class="p24_regularTile"]', {
                 timeout: 5000,
               });
             } catch {
@@ -217,9 +216,7 @@ export class Property24Scraper {
     const $ = cheerio.load(htmlContent);
 
     // Try multiple selectors as Property24 may have different layouts
-    const propertyElements = $(
-      '[data-test-id="property-card"], .property-card, [class*="property"], article'
-    );
+    const propertyElements = $(PROPERTY_CARD_SELECTORS.join(", "));
 
     if (propertyElements.length === 0) {
       console.warn(
